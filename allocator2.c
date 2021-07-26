@@ -77,6 +77,7 @@ void *re(void *ptr, size_t size)
     if (size == currentBlock->size)
         return ptr;
 
+    portSUSPEND_ALL;
     header_t *nextBlock = (header_t *)currentBlock->next;
 
     if (size < currentBlock->size)
@@ -159,10 +160,10 @@ void *re(void *ptr, size_t size)
                 return 0;
             memcpy(newPtr, ptr, currentBlock->size);
             fr(ptr);
-            return newPtr;
+            ptr = newPtr;
         }
     }
-
+    portRESUME_ALL;
     return ptr;
 }
 
